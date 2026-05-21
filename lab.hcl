@@ -98,6 +98,10 @@ resource "task" "setup_desktop" {
 resource "page" "intro" {
   title = "Introduction"
   file  = "instructions/intro.md"
+
+  activities = {
+    setup = resource.task.setup_desktop
+  }
 }
 
 resource "lab" "vm_guacamole" {
@@ -122,10 +126,6 @@ resource "lab" "vm_guacamole" {
 
       page "intro" {
         reference = resource.page.intro
-
-        task "setup_desktop" {
-          reference = resource.task.setup_desktop
-        }
       }
     }
   }

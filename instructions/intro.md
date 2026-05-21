@@ -1,3 +1,5 @@
+<instruqt-task id="setup">Setting up the desktop environment...</instruqt-task>
+
 ## VM Desktop via Guacamole
 
 This lab runs an Ubuntu VM with an XFCE desktop environment, accessible through Apache Guacamole in the browser.
