@@ -9,32 +9,6 @@ resource "vm" "desktop" {
   environment = {
     "VNC_PASSWORD" = "instruqt"
   }
-  startup_script = <<-EOT
-    #!/bin/bash
-    set -e
-    export DEBIAN_FRONTEND=noninteractive
-
-    # Install lightweight desktop and VNC server
-    apt-get update
-    apt-get install -y xfce4 xfce4-terminal tigervnc-standalone-server dbus-x11
-
-    # Configure VNC password
-    mkdir -p /root/.vnc
-    echo "$VNC_PASSWORD" | vncpasswd -f > /root/.vnc/passwd
-    chmod 600 /root/.vnc/passwd
-
-    # VNC startup script
-    cat > /root/.vnc/xstartup << 'XSTARTUP'
-    #!/bin/sh
-    unset SESSION_MANAGER
-    unset DBUS_SESSION_BUS_ADDRESS
-    exec startxfce4
-    XSTARTUP
-    chmod +x /root/.vnc/xstartup
-
-    # Start VNC server on display :1 (port 5901)
-    vncserver :1 -geometry 1280x800 -depth 24 -localhost no
-  EOT
   config {}
   network {
     id         = resource.network.lab_net.meta.id
@@ -43,12 +17,6 @@ resource "vm" "desktop" {
   resources {
     cpu    = 4
     memory = 8192
-  }
-  health_check {
-    timeout = "5m"
-    tcp {
-      address = "localhost:5901"
-    }
   }
 }
 
@@ -110,6 +78,23 @@ resource "layout" "main" {
   }
 }
 
+resource "task" "setup_desktop" {
+  description = "Install desktop environment"
+
+  config {
+    target  = resource.vm.desktop
+    timeout = "600s"
+  }
+
+  condition "install" {
+    description = "Install XFCE and VNC"
+
+    setup {
+      script = "scripts/setup_desktop.sh"
+    }
+  }
+}
+
 resource "page" "intro" {
   title = "Introduction"
   file  = "instructions/intro.md"
@@ -137,6 +122,10 @@ resource "lab" "vm_guacamole" {
 
       page "intro" {
         reference = resource.page.intro
+
+        task "setup_desktop" {
+          reference = resource.task.setup_desktop
+        }
       }
     }
   }
