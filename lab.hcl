@@ -15,8 +15,8 @@ resource "vm" "desktop" {
     export DEBIAN_FRONTEND=noninteractive
 
     # Install lightweight desktop and VNC server
-    apt-get update -qq
-    apt-get install -y -qq xfce4 xfce4-terminal tigervnc-standalone-server dbus-x11 > /dev/null 2>&1
+    apt-get update
+    apt-get install -y xfce4 xfce4-terminal tigervnc-standalone-server dbus-x11
 
     # Configure VNC password
     mkdir -p /root/.vnc
