@@ -41,8 +41,8 @@ resource "vm" "desktop" {
     ip_address = "10.200.0.10"
   }
   resources {
-    cpu    = 2
-    memory = 4096
+    cpu    = 4
+    memory = 8192
   }
   health_check {
     timeout = "5m"
