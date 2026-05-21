@@ -45,6 +45,7 @@ resource "vm" "desktop" {
     memory = 4096
   }
   health_check {
+    timeout = "5m"
     tcp {
       address = "localhost:5901"
     }
@@ -80,7 +81,7 @@ resource "template" "guacamole_config" {
   source      = "files/user-mapping.xml"
   destination = "/guacamole/user-mapping.xml"
 
-  vars = {
+  variables = {
     vnc_host     = "10.200.0.10"
     vnc_port     = "5901"
     vnc_password = "instruqt"
