@@ -1,0 +1,10 @@
+<user-mapping>
+    <authorize username="instruqt" password="instruqt">
+        <connection name="Desktop">
+            <protocol>vnc</protocol>
+            <param name="hostname">{{vnc_host}}</param>
+            <param name="port">{{vnc_port}}</param>
+            <param name="password">{{vnc_password}}</param>
+        </connection>
+    </authorize>
+</user-mapping>
