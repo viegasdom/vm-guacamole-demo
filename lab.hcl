@@ -9,7 +9,8 @@ resource "vm" "desktop" {
   environment = {
     "VNC_PASSWORD" = "instruqt"
   }
-  config {}
+  config {
+  }
   network {
     id         = resource.network.lab_net.meta.id
     ip_address = "10.200.0.10"
@@ -36,7 +37,7 @@ resource "container" "guacamole" {
     ip_address = "10.200.0.20"
   }
   port {
-    local         = "8080"
+    local           = "8080"
     open_in_browser = "/"
   }
   resources {
@@ -99,9 +100,6 @@ resource "page" "intro" {
   title = "Introduction"
   file  = "instructions/intro.md"
 
-  activities = {
-    setup = resource.task.setup_desktop
-  }
 }
 
 resource "lab" "vm_guacamole" {
