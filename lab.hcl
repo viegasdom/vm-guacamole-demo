@@ -9,6 +9,28 @@ resource "vm" "desktop" {
   environment = {
     "VNC_PASSWORD" = "instruqt"
   }
+  startup_script = <<-EOT
+    #!/bin/bash
+    set -e
+    export DEBIAN_FRONTEND=noninteractive
+
+    apt-get update
+    apt-get install -y xfce4 xfce4-terminal tigervnc-standalone-server dbus-x11
+
+    mkdir -p /root/.vnc
+    echo "$VNC_PASSWORD" | vncpasswd -f > /root/.vnc/passwd
+    chmod 600 /root/.vnc/passwd
+
+    cat > /root/.vnc/xstartup << 'XSTARTUP'
+    #!/bin/sh
+    unset SESSION_MANAGER
+    unset DBUS_SESSION_BUS_ADDRESS
+    exec startxfce4
+    XSTARTUP
+    chmod +x /root/.vnc/xstartup
+
+    vncserver :1 -geometry 1280x800 -depth 24 -localhost no
+  EOT
   config {
   }
   network {
@@ -18,6 +40,12 @@ resource "vm" "desktop" {
   resources {
     cpu    = 4
     memory = 8192
+  }
+  health_check {
+    timeout = "10m"
+    tcp {
+      address = "localhost:5901"
+    }
   }
 }
 
@@ -57,6 +85,12 @@ resource "template" "guacamole_config" {
   }
 }
 
+resource "service" "guacamole" {
+  target = resource.container.guacamole
+  port   = 8080
+  path   = "/"
+}
+
 resource "terminal" "desktop" {
   target = resource.vm.desktop
 }
@@ -65,7 +99,7 @@ resource "layout" "main" {
   column {
     tab "desktop_ui" {
       title  = "Desktop"
-      target = resource.container.guacamole
+      target = resource.service.guacamole
     }
     tab "terminal" {
       title  = "Terminal"
@@ -75,23 +109,6 @@ resource "layout" "main" {
 
   column {
     instructions {
-    }
-  }
-}
-
-resource "task" "setup_desktop" {
-  description = "Install desktop environment"
-
-  config {
-    target  = resource.vm.desktop
-    timeout = "600s"
-  }
-
-  condition "install" {
-    description = "Install XFCE and VNC"
-
-    setup {
-      script = "scripts/setup_desktop.sh"
     }
   }
 }
