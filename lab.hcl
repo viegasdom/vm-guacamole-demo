@@ -83,7 +83,7 @@ resource "container" "guacamole" {
 }
 
 resource "template" "guacamole_config" {
-  source      = "files/user-mapping.xml"
+  source      = file("files/user-mapping.xml")
   destination = "/guacamole/guacamole/user-mapping.xml"
 
   variables = {
