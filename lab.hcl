@@ -52,7 +52,7 @@ resource "vm" "desktop" {
   health_check {
     timeout = "10m"
     tcp {
-      address = "localhost:5901"
+      address = "10.200.0.10:5901"
     }
   }
 }
