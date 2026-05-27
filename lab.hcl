@@ -29,13 +29,15 @@ resource "vm" "desktop" {
     XSTARTUP
     chmod +x /root/.vnc/xstartup
 
-    # Use Xtigervnc directly to avoid the vncserver wrapper's interactive password prompt
-    Xtigervnc :1 -geometry 1280x800 -depth 24 -localhost 0 -SecurityTypes VncAuth -rfbauth /root/.vnc/passwd &
+    # Use Xtigervnc directly to avoid the vncserver wrapper's interactive password prompt.
+    # Redirect output to /dev/null so background processes don't hold stdout/stderr
+    # pipes open, which would cause the executor to hang waiting for EOF.
+    Xtigervnc :1 -geometry 1280x800 -depth 24 -localhost 0 -SecurityTypes VncAuth -rfbauth /root/.vnc/passwd </dev/null >/dev/null 2>&1 &
     sleep 2
 
     # Start the desktop session
     export DISPLAY=:1
-    /root/.vnc/xstartup &
+    /root/.vnc/xstartup </dev/null >/dev/null 2>&1 &
   EOT
   config {
   }
