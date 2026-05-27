@@ -29,7 +29,7 @@ resource "vm" "desktop" {
     XSTARTUP
     chmod +x /root/.vnc/xstartup
 
-    vncserver :1 -geometry 1280x800 -depth 24 -localhost no
+    vncserver :1 -geometry 1280x800 -depth 24 -localhost no -SecurityTypes VncAuth
   EOT
   config {
   }
