@@ -84,7 +84,7 @@ resource "container" "guacamole" {
 
 resource "template" "guacamole_config" {
   source      = "files/user-mapping.xml"
-  destination = "/guacamole/guacamole/user-mapping.xml"
+  destination = "/guacamole/user-mapping.xml"
 
   variables = {
     vnc_host     = "10.200.0.10"
