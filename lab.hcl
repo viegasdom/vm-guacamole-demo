@@ -4,7 +4,7 @@ resource "network" "lab_net" {
 
 resource "vm" "desktop" {
   image {
-    name = "europe-west1-docker.pkg.dev/instruqt/instruqt-sandbox/ubuntu-2204:latest"
+    name = "europe-west1-docker.pkg.dev/instruqt/instruqt-sandbox/ubuntu:22.04"
   }
   environment = {
     "VNC_PASSWORD" = "instruqt"
