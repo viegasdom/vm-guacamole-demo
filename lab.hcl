@@ -73,7 +73,7 @@ resource "container" "guacamole" {
     ip_address = "10.200.0.20"
   }
   port {
-    local           = "8080"
+    local           = 8080
     open_in_browser = "/"
   }
   resources {
